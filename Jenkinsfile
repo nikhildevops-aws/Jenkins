@@ -2,8 +2,12 @@ pipeline {
     agent any
 
     environment {
-        AWS_DEFAULT_REGION = 'us-east-1'
+        // Set AWS credentials (these should be stored in Jenkins credentials securely)
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+        AWS_DEFAULT_REGION = 'us-east-1'  // Change to your desired region
     }
+
 
     stages {
         stage('Checkout') {
