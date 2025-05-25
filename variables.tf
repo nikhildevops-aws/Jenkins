@@ -1,4 +1,4 @@
-variable "aws_region" {
+variable "region" {
   description = "The AWS region to deploy resources in"
   type        = string
   default     = "us-east-1"
@@ -29,12 +29,12 @@ variable "instance_type" {
 }
 
 variable "key_name" {
-  description = "The name of the SSH key pair to use for EC2 instances"
+  description = "The name of the SSH key pair to use for EC2"
   type        = string
 }
 
 variable "environment" {
-  description = "Deployment environment name (e.g., dev, prod)"
+  description = "Deployment environment (dev, staging, prod)"
   type        = string
   default     = "dev"
 }
