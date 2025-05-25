@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+        AWS_ACCESS_KEY_ID     = credentials('aws-access-key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git credentialsId: 'github-pat', url: 'https://github.com/nikhildevops-aws/Jenkins.git', branch: 'main'
+                git credentialsId: 'github-pat', url: 'https://github.com/nikhildevops-aws/Jenkins.git'
             }
         }
 
@@ -19,28 +19,33 @@ pipeline {
             }
         }
 
-        stage('Validate Terraform') {
+        stage('Terraform Validate') {
             steps {
                 sh 'terraform validate'
             }
         }
 
-        stage('Plan Terraform') {
+        stage('Terraform Plan') {
             steps {
-                sh 'terraform plan'
+                sh 'terraform plan -var="key_name=your-aws-keypair-name"'
             }
         }
 
-        stage('Apply Terraform') {
+        stage('Terraform Apply') {
+            when {
+                beforeAgent true
+                expression {
+                    return input(id: 'ApproveApply', message: 'Apply Terraform changes?', ok: 'Yes')
+                }
+            }
             steps {
-                input 'Approve to apply?'
-                sh 'terraform apply -auto-approve'
+                sh 'terraform apply -auto-approve -var="key_name=your-aws-keypair-name"'
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                echo 'Verify deployment steps here'
+                echo 'Deployment verification steps go here.'
             }
         }
     }
